@@ -28,6 +28,9 @@ export default function Home() {
   
   const [visible,setVisible] = useState(false)
 
+  const [categoryName,setCategoryName] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<number | "All">("All");
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
@@ -84,7 +87,7 @@ export default function Home() {
 
   const addCategory = async () => {
     const { error } = await supabase.from("category").insert({
-      name,
+      name: categoryName,
     });
 
     if (error) {
@@ -153,8 +156,25 @@ export default function Home() {
   return (
     <div className="p-6">
       
-      <div className="flex justify-end items-center p-2 px-3 mb-5">
+      <div className="flex justify-between items-center p-2 px-3 mb-5">
+        <div className="flex items-center gap-2">
+          <input value={categoryName} onChange={(e)=>setCategoryName(e.target.value)} type="text" className="px-3 py-2 border border-gray-300 rounded-2xl" placeholder="Category Name" />
+          <button onClick={addCategory} className="px-3 py-2 hover:bg-black/70 rounded-2xl bg-black text-white  transition duration-150 cursor-pointer">
+            Add Category
+          </button>
+        </div>
+
         <button onClick={()=>setVisible(true)} className="px-3 py-2 hover:bg-black/70 rounded-2xl bg-black text-white  transition duration-150 cursor-pointer">+Food</button>
+      </div>
+
+
+      <div className="flex gap-2 h-12 my-3 items-center">
+        <button className="px-3 py-2 bg-gray-200 transition duration-150 hover:bg-gray-300 rounded-2xl" >All</button>
+        {categories.map((category:Category) => (
+          <div key={category.id} className="px-3 py-2 hover:bg-gray-300 transition duration-150 bg-gray-200 rounded-2xl">
+            {category.name}
+          </div>
+        ))}
       </div>
 
       <div className="grid grid-cols-3 gap-5">
