@@ -296,18 +296,19 @@ export default function Home() {
           />
 
           <select
-  value={selectedCategory}
-  onChange={(e) => setSelectedCategory(Number(e.target.value))}
-  className="py-1 text-gray-200"
->
-  <option value="">Select Category</option>
+          style={{backgroundColor:"#1a1a1a"}}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(Number(e.target.value))}
+          className="category-select"
+          >
+          <option value="">Select Category</option>
 
-  {categories.map((category) => (
-    <option key={category.id} value={category.id}>
-      {category.name}
-    </option>
-  ))}
-</select>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+          </select>
 
           <label className="text-white flex gap-2">
             Available
