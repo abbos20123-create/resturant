@@ -13,6 +13,7 @@ type Food = {
   description: string;
   image: string;
   available: boolean;
+  categoryId: number;
 };
 
 type Category = {
@@ -74,6 +75,7 @@ export default function Home() {
       description,
       image,
       available,
+      categoryId: selectedCategory,
     });
 
     if (error) {
@@ -131,6 +133,7 @@ export default function Home() {
         description,
         image,
         available,
+        categoryId: selectedCategory,
       })
       .eq("id", editingId);
 
@@ -153,6 +156,16 @@ export default function Home() {
     setVisible(false)
   };
 
+
+  const filterFoodsByCategory = () => {
+    if (selectedCategory === "All") {
+      return foods;
+    }
+    return foods.filter((food: Food) => food.categoryId === selectedCategory);
+  }
+
+
+
   return (
     <div className="p-6">
       
@@ -169,16 +182,16 @@ export default function Home() {
 
 
       <div className="flex gap-2 h-12 my-3 items-center">
-        <button className="px-3 py-2 bg-gray-200 transition duration-150 hover:bg-gray-300 rounded-2xl" >All</button>
+        <button onClick={() => setSelectedCategory("All")} className={`${selectedCategory === "All" ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300"}  px-3 py-2 cursor-pointer transition duration-150 rounded-2xl`} >All</button>
         {categories.map((category:Category) => (
-          <div key={category.id} className="px-3 py-2 hover:bg-gray-300 transition duration-150 bg-gray-200 rounded-2xl">
+          <div key={category.id} onClick={() => setSelectedCategory(category.id)} className={`${selectedCategory === category.id ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300"}  px-3 py-2 cursor-pointer transition duration-150 rounded-2xl`}>
             {category.name}
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-3 gap-5">
-        {foods.map((food:Food) => (
+        {filterFoodsByCategory().map((food:Food) => (
           <div
           style={{transition:"300ms"}}
             key={food.id}
@@ -282,6 +295,20 @@ export default function Home() {
             className="input"
           />
 
+          <select
+  value={selectedCategory}
+  onChange={(e) => setSelectedCategory(Number(e.target.value))}
+  className="py-1 text-gray-200"
+>
+  <option value="">Select Category</option>
+
+  {categories.map((category) => (
+    <option key={category.id} value={category.id}>
+      {category.name}
+    </option>
+  ))}
+</select>
+
           <label className="text-white flex gap-2">
             Available
             <input
@@ -290,12 +317,6 @@ export default function Home() {
               onChange={(e) => setAvailable(e.target.checked)}
             />
           </label>
-
-
-
-
-
-
 
 
 
