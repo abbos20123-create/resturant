@@ -15,11 +15,17 @@ type Food = {
   available: boolean;
 };
 
+type Category = {
+  id: number;
+  name: string;
+};
+
 export default function Home() {
   const supabase = createClient();
 
   const [foods, setFoods] = useState<Food[]>([]);
-
+  const [categories, setCategories] = useState<Category[]>([]);
+  
   const [visible,setVisible] = useState(false)
 
   const [name, setName] = useState("");
@@ -32,6 +38,7 @@ export default function Home() {
 
   useEffect(() => {
     getData();
+    getCategories();
   }, []);
 
   const getData = async () => {
@@ -43,6 +50,17 @@ export default function Home() {
     }
 
     setFoods(data || []);
+  };
+
+  const getCategories = async () => {
+    const { data, error } = await supabase.from("category").select().order("id");
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setCategories(data || []);
   };
 
 
@@ -63,6 +81,21 @@ export default function Home() {
     clearForm();
     getData();
   };
+
+  const addCategory = async () => {
+    const { error } = await supabase.from("category").insert({
+      name,
+    });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    clearForm();
+    getCategories();
+  };
+
 
   const deleteFood = async (id: number) => {
     const { error } = await supabase.from("food").delete().eq("id", id);
